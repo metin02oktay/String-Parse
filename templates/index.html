@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment Parser</title>
+    <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #222;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .accordion {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .accordion.active, .accordion:hover {
+            background-color: #ccc;
+        }
+        .panel {
+            padding: 0 18px;
+            display: none;
+            background-color: white;
+            overflow: hidden;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .result-table th, .result-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .result-table th {
+            background-color: #f4f4f4;
+        }
+        .result-table td.aciklama {
+            white-space: pre-wrap;
+            font-size: 12px;
+            color: #555;
+        }
+        .error {
+            color: #b00020;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Segment Parser (GGOH / GGSS / GGTK ...)</h2>
+    <p>Parse edilmemiş segment verisini girin:</p>
+    <textarea id="rawInput" placeholder="Sıkıştırılmamış ham segment metni"></textarea>
+    <button id="parseButton">Parse Et</button>
+
+    <div id="errorBox" class="error"></div>
+    <div id="accordionContainer"></div>
+
+    <script>
+        // HTML enjeksiyonunu önlemek için metni kaçışlar.
+        function escapeHtml(value) {
+            return $("<div>").text(value === null || value === undefined ? "" : String(value)).html();
+        }
+
+        // Bir alan değerini tablo hücresi olarak üretir.
+        function renderValue(value) {
+            if (Array.isArray(value)) {
+                return value.map(function (item) {
+                    return "<pre>" + escapeHtml(JSON.stringify(item, null, 2)) + "</pre>";
+                }).join("");
+            }
+            return escapeHtml(value);
+        }
+
+        $("#parseButton").click(function () {
+            const rawText = $("#rawInput").val();
+            const errorBox = $("#errorBox");
+            errorBox.text("");
+
+            if (!rawText.trim()) {
+                errorBox.text("Lütfen bir veri giriniz.");
+                return;
+            }
+
+            $.ajax({
+                url: "/parse_et",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ raw_text: rawText }),
+                success: function (response) {
+                    const container = $("#accordionContainer");
+                    container.empty();
+
+                    const segmentler = Object.keys(response);
+                    if (segmentler.length === 0) {
+                        errorBox.text("Tanımlı bir segment bulunamadı.");
+                        return;
+                    }
+
+                    segmentler.forEach(function (segment) {
+                        const fields = response[segment];
+                        const button = $('<button class="accordion"></button>').text(segment);
+                        const panel = $('<div class="panel"></div>');
+                        const table = $('<table class="result-table"></table>');
+                        const thead = $('<thead><tr><th>Alan Adı</th><th>Değer</th><th>Açıklama</th></tr></thead>');
+                        const tbody = $('<tbody></tbody>');
+
+                        Object.keys(fields).forEach(function (field) {
+                            const data = fields[field];
+                            const row = $("<tr></tr>");
+                            row.append($("<td></td>").text(field));
+                            row.append($("<td></td>").html(renderValue(data.deger)));
+                            row.append($("<td class='aciklama'></td>").text(data.aciklama || ""));
+                            tbody.append(row);
+                        });
+
+                        table.append(thead);
+                        table.append(tbody);
+                        panel.append(table);
+
+                        container.append(button);
+                        container.append(panel);
+                    });
+
+                    $(".accordion").click(function () {
+                        this.classList.toggle("active");
+                        const panel = this.nextElementSibling;
+                        panel.style.display = panel.style.display === "block" ? "none" : "block";
+                    });
+                },
+                error: function (err) {
+                    let mesaj = "Hata oluştu.";
+                    if (err.responseJSON && err.responseJSON.error) {
+                        mesaj = err.responseJSON.error;
+                    }
+                    errorBox.text(mesaj);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

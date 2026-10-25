@@ -1,0 +1,43 @@
+[project]
+name = "string-parse"
+version = "0.1.0"
+description = "Sabit uzunluklu segment metinlerini (GGOH, GGSS, GGTK) parse eden KVKK uyumlu açık kaynak araç"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+keywords = ["parser", "segment", "fixed-width", "kvkk", "flask"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "colorlog>=6.9.0",
+    "flask>=3.1.0",
+    "opensearch-py>=3.0.0",
+    "pydantic>=2.11.7",
+    "requests>=2.32.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/metin02oktay/string-parse"
+Issues = "https://github.com/metin02oktay/string-parse/issues"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

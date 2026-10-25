@@ -1,0 +1,26 @@
+# Ortam Değişkenleri ve Sırlar (KVKK & Güvenlik)
+.env
+.env.*
+!.env.example
+
+# Yerel AI Hafızası (Sadece geliştiricinin bilgisayarına özel notlar)
+AI/local_memory.md
+
+# Python / Node / Genel Önbellek Dosyaları
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+node_modules/
+dist/
+build/
+*.egg-info/
+*.log
+.DS_Store
+
+# Editör / IDE
+.idea/
+.vscode/
+AI/
