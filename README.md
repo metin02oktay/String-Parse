@@ -1,11 +1,10 @@
 # String Parse
 
-[![CI](https://github.com/metin02oktay/string-parse/actions/workflows/ci.yml/badge.svg)](https://github.com/metin02oktay/string-parse/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.13+](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/)
 
 Sabit uzunluklu (fixed-width) segment metinlerini okuyup anlamlandırılmış
-JSON'a dönüştüren, KVKK/GDPR uyumlu açık kaynak bir araçtır.
+JSON'a dönüştüren, KVKK/GDPR uyumlu açık kaynak bir araçtır. Proje henüz giriş aşamasında olup geliştirmeye açıktır.
 
 *[English summary below](#english-summary)*
 
@@ -99,7 +98,6 @@ uv run ruff check .
 
 ```text
 .
-├── AI/                     # AI ajanları için modüler bağlam ve kurallar
 ├── PARSERS/                # Segment parser'ları ve ortak taban sınıf
 ├── static/                 # jQuery
 ├── templates/              # Arayüz
@@ -113,7 +111,6 @@ uv run ruff check .
 
 - Depoda hiçbir gerçek kişisel veri, API anahtarı veya şifre bulunmaz.
 - Tüm yapılandırma ortam değişkenlerinden okunur (`.env.example`).
-- Güvenlik açığı bildirimi için [SECURITY.md](SECURITY.md) dosyasına bakın.
 
 ### Katkı
 
