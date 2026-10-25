@@ -3,8 +3,6 @@
 .env.*
 !.env.example
 
-# Yerel AI Hafızası (Sadece geliştiricinin bilgisayarına özel notlar)
-AI/local_memory.md
 
 # Python / Node / Genel Önbellek Dosyaları
 __pycache__/
